@@ -56,7 +56,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.NewRecyclableItem.RecyclableTypeId, "Recyclable Type", new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(model => model.NewRecyclableItem.RecyclableTypeId, new SelectList(Model.RecyclableTypes, "Id", "Type"), new { @class = "form-control", onchange = "calculateRate()" })
+            @Html.DropDownListFor(model => model.NewRecyclableItem.RecyclableTypeId, new SelectList(Model.RecyclableTypes, "Id", "Type"), new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.NewRecyclableItem.RecyclableTypeId, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -69,12 +69,14 @@
         </div>
     </div>
 
+
     <div class="form-group">
         @Html.LabelFor(model => model.NewRecyclableItem.ComputedRate, new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             <span id="computedRate"></span>
         </div>
     </div>
+
 
     <div class="form-group">
         @Html.LabelFor(model => model.NewRecyclableItem.ItemDescription, new { @class = "control-label col-md-2" })
@@ -90,19 +92,93 @@
         </div>
     </div>
 
-    <script>
-        function calculateRate() {
+    //working but not showing the label
+    @*    <script>
+            function calculateRate() {
+                var weight = parseFloat($('#NewRecyclableItem_Weight').val());
+                var rateText = $('#NewRecyclableItem_RecyclableTypeId option:selected').text();
+                var rate = parseFloat(rateText.split(' - ')[1]);
+
+                if (!isNaN(weight) && !isNaN(rate)) {
+                    var computedRate = weight * rate;
+                    $('#computedRate').text(computedRate.toFixed(2));
+                } else {
+                    $('#computedRate').text('N/A');
+                }
+            }
+        </script>*@
+    //wrong label
+    @*<script>
+            function calculateRate() {
+                console.log("calculateRate function called.");
+
+                var weight = parseFloat($('#NewRecyclableItem_Weight').val());
+                console.log("Weight:", weight);
+
+                var rateText = $('#NewRecyclableItem_RecyclableTypeId option:selected').text();
+                var rate = parseFloat(rateText.split(' ')[1]); // Adjusted to handle the format "type 5"
+
+                console.log("Rate:", rate);
+
+                if (!isNaN(weight) && !isNaN(rate)) {
+                    var computedRate = weight * rate;
+                    $('#computedRate').text('Computed Rate: ' + computedRate.toFixed(2));
+                } else {
+                    $('#computedRate').text('Computed Rate: N/A');
+                }
+            }
+        </script>*@
+    // the most close one
+@*    <script>
+         function calculateRate() {
+            console.log("calculateRate function called.");
+
             var weight = parseFloat($('#NewRecyclableItem_Weight').val());
+            console.log("Weight:", weight);
+
             var rateText = $('#NewRecyclableItem_RecyclableTypeId option:selected').text();
-            var rate = parseFloat(rateText.split(' - ')[1]);
+            var rate = parseFloat(rateText.split(' ')[1]); // Adjusted to handle the format "type 5"
+
+            console.log("Rate:", rate);
 
             if (!isNaN(weight) && !isNaN(rate)) {
                 var computedRate = weight * rate;
-                $('#computedRate').text(computedRate.toFixed(2));
+                $('#computedRate').text('Computed Rate: ' + computedRate.toFixed(2));
             } else {
-                $('#computedRate').text('N/A');
+                $('#computedRate').text('Computed Rate: N/A');
             }
+
+        } 
+    </script>*@
+    <script>
+
+        //start
+        function getRate() {
+            var rateText = $('#NewRecyclableItem_RecyclableTypeId option:selected').text();
+            var rate = parseFloat(rateText.split(' ')[1]); // Extract the rate from the dropdown text
+            return rate;
         }
+
+
+
+        function getWeight() {
+            return parseFloat($('#NewRecyclableItem_Weight').val());
+        }
+
+        function calculateRate() {
+            var weight = getWeight(); // Call the function to get the weight
+            var rate = getRate(); // Call the function to get the rate
+            var computedRate = weight * rate;
+
+            $('#computedRate').text('Computed Rate: ' + computedRate.toFixed(2));
+            $('#rateLabel').text('Rate: ' + rate); // Set the rate label
+        }
+        //end
+
+
     </script>
+
+
+
 
 }
