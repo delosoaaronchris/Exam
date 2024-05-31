@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 
 namespace RecyclingApp.Models
 {
@@ -14,8 +16,9 @@ namespace RecyclingApp.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RecyclableType>()
-                .HasIndex(rt => rt.Type)
-                .IsUnique();
+        .Property(rt => rt.Type)
+        .HasColumnAnnotation("Index", new IndexAnnotation(new IndexAttribute("IX_Type") { IsUnique = true }));
+
 
             base.OnModelCreating(modelBuilder);
         }

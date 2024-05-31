@@ -1,30 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RecyclingApp.Models;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
-namespace Exam.Controllers
+namespace RecyclingApp.Controllers
 {
     public class HomeController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
+
         public ActionResult Index()
         {
-            return View();
+            var viewModel = new HomeViewModel
+            {
+                RecyclableTypes = db.RecyclableTypes.ToList(),
+                RecyclableItems = db.RecyclableItems.ToList(),
+                NewRecyclableType = new RecyclableType(),
+                NewRecyclableItem = new RecyclableItem()
+            };
+
+            return View(viewModel);
         }
 
-        public ActionResult About()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateRecyclableType(HomeViewModel viewModel)
         {
-            ViewBag.Message = "Your application description page.";
+            if (ModelState.IsValid)
+            {
+                db.RecyclableTypes.Add(viewModel.NewRecyclableType);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-            return View();
+            viewModel.RecyclableTypes = db.RecyclableTypes.ToList();
+            viewModel.RecyclableItems = db.RecyclableItems.ToList();
+            return View("Index", viewModel);
         }
 
-        public ActionResult Contact()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateRecyclableItem(HomeViewModel viewModel)
         {
-            ViewBag.Message = "Your contact page.";
+            if (ModelState.IsValid)
+            {
+                viewModel.NewRecyclableItem.ComputedRate = viewModel.NewRecyclableItem.Weight * db.RecyclableTypes.Find(viewModel.NewRecyclableItem.RecyclableTypeId).Rate;
+                db.RecyclableItems.Add(viewModel.NewRecyclableItem);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
 
-            return View();
+            viewModel.RecyclableTypes = db.RecyclableTypes.ToList();
+            viewModel.RecyclableItems = db.RecyclableItems.ToList();
+            return View("Index", viewModel);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

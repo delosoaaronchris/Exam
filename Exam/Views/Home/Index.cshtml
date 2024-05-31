@@ -1,31 +1,102 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model RecyclingApp.Models.HomeViewModel
+
+@{
+    ViewBag.Title = "Home";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<h2>Create Recyclable Type</h2>
+@using (Html.BeginForm("CreateRecyclableType", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableType.Type, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NewRecyclableType.Type, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NewRecyclableType.Type, "", new { @class = "text-danger" })
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableType.Rate, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NewRecyclableType.Rate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NewRecyclableType.Rate, "", new { @class = "text-danger" })
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableType.MinKg, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NewRecyclableType.MinKg, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NewRecyclableType.MinKg, "", new { @class = "text-danger" })
+        </div>
     </div>
-</div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableType.MaxKg, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NewRecyclableType.MaxKg, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NewRecyclableType.MaxKg, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+<h2>Create Recyclable Item</h2>
+@using (Html.BeginForm("CreateRecyclableItem", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableItem.RecyclableTypeId, "Recyclable Type", new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.NewRecyclableItem.RecyclableTypeId, new SelectList(Model.RecyclableTypes, "Id", "Type"), new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.NewRecyclableItem.RecyclableTypeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableItem.Weight, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NewRecyclableItem.Weight, new { htmlAttributes = new { @class = "form-control", onchange = "calculateRate()" } })
+            @Html.ValidationMessageFor(model => model.NewRecyclableItem.Weight, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableItem.ComputedRate, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <span id="computedRate"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.NewRecyclableItem.ItemDescription, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.NewRecyclableItem.ItemDescription, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.NewRecyclableItem.ItemDescription, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+
+    <script>
+        function calculateRate() {
+            var weight = parseFloat($('#NewRecyclableItem_Weight').val());
+            var rate = parseFloat($('#NewRecyclableItem_RecyclableTypeId option:selected').text().split(' - ')[1]);
+            var computedRate = weight * rate;
+
+            $('#computedRate').text('Computed Rate: ' + computedRate.toFixed(2));
+        }
+    </script>
+}
