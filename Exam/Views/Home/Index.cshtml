@@ -56,7 +56,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.NewRecyclableItem.RecyclableTypeId, "Recyclable Type", new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(model => model.NewRecyclableItem.RecyclableTypeId, new SelectList(Model.RecyclableTypes, "Id", "Type"), new { @class = "form-control" })
+            @Html.DropDownListFor(model => model.NewRecyclableItem.RecyclableTypeId, new SelectList(Model.RecyclableTypes, "Id", "Type"), new { @class = "form-control", onchange = "calculateRate()" })
             @Html.ValidationMessageFor(model => model.NewRecyclableItem.RecyclableTypeId, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -98,58 +98,11 @@
 
             if (!isNaN(weight) && !isNaN(rate)) {
                 var computedRate = weight * rate;
-                $('#computedRate').text('Computed Rate: ' + computedRate.toFixed(2));
+                $('#computedRate').text(computedRate.toFixed(2));
             } else {
                 $('#computedRate').text('N/A');
             }
         }
     </script>
-    // start of the list
-    <h2>Recyclable Types</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.RecyclableTypes.First().Type)</th>
-                <th>@Html.DisplayNameFor(model => model.RecyclableTypes.First().Rate)</th>
-                <th>@Html.DisplayNameFor(model => model.RecyclableTypes.First().MinKg)</th>
-                <th>@Html.DisplayNameFor(model => model.RecyclableTypes.First().MaxKg)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.RecyclableTypes)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Type)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Rate)</td>
-                    <td>@Html.DisplayFor(modelItem => item.MinKg)</td>
-                    <td>@Html.DisplayFor(modelItem => item.MaxKg)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h2>Recyclable Items</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.RecyclableItems.First().RecyclableType.Type)</th>
-                <th>@Html.DisplayNameFor(model => model.RecyclableItems.First().Weight)</th>
-                <th>@Html.DisplayNameFor(model => model.RecyclableItems.First().ComputedRate)</th>
-                <th>@Html.DisplayNameFor(model => model.RecyclableItems.First().ItemDescription)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.RecyclableItems)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.RecyclableType.Type)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Weight)</td>
-                    <td>@Html.DisplayFor(modelItem => item.ComputedRate)</td>
-                    <td>@Html.DisplayFor(modelItem => item.ItemDescription)</td>
-
-                </tr>
-            }
-        </tbody>
-    </table>
 
 }
