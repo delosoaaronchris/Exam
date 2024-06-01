@@ -153,12 +153,24 @@
     <script>
 
         //start
-        function getRate() {
+@*        function getRate() {
             var rateText = $('#NewRecyclableItem_RecyclableTypeId option:selected').text();
             var rate = parseFloat(rateText.split(' ')[1]); // Extract the rate from the dropdown text
             return rate;
-        }
+        }*@
 
+        function getRate() {
+            var selectedOption = $('#NewRecyclableItem_RecyclableTypeId option:selected');
+            console.log("Selected Option:", selectedOption); // Log the selected option for debugging
+            var rateText = selectedOption.text();
+
+            
+            console.log("Rate Text:", rateText); // Log the rate text for debugging
+            var rate = parseFloat(rateText.split(' ')[1]); // Extract the rate from the dropdown text
+            console.log("Extracted Rate:", rate); // Log the extracted rate for debugging
+            return rate;
+
+        }
 
 
         function getWeight() {
