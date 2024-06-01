@@ -62,5 +62,15 @@ namespace RecyclingApp.Controllers
             }
             base.Dispose(disposing);
         }
+        // start
+           
+        public ActionResult GetRate(int recyclableTypeId)
+        {
+            // Retrieve the rate from the database based on recyclableTypeId
+            var rate = db.RecyclableTypes.Where(rt => rt.Id == recyclableTypeId).Select(rt => rt.Rate).FirstOrDefault();
+
+            // Return the rate
+            return Json(rate, JsonRequestBehavior.AllowGet);
+        }
     }
 }

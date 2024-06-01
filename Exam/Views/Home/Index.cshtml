@@ -159,7 +159,7 @@
             return rate;
         }*@
 
-        function getRate() {
+@*        function getRate() {
             var selectedOption = $('#NewRecyclableItem_RecyclableTypeId option:selected');
             console.log("Selected Option:", selectedOption); // Log the selected option for debugging
             var rateText = selectedOption.text();
@@ -184,8 +184,31 @@
 
             $('#computedRate').text('Computed Rate: ' + computedRate.toFixed(2));
             $('#rateLabel').text('Rate: ' + rate); // Set the rate label
-        }
+        }*@
         //end
+
+        // Final calculation
+        function calculateRate() {
+            var weight = parseFloat($('#NewRecyclableItem_Weight').val());
+            var recyclableTypeId = $('#NewRecyclableItem_RecyclableTypeId').val();
+
+            $.ajax({
+                url: '/Home/GetRate',
+                type: 'GET',
+                data: { recyclableTypeId: recyclableTypeId },
+                success: function (rate) {
+                    if (!isNaN(weight) && !isNaN(rate)) {
+                        var computedRate = weight * rate;
+                        $('#computedRate').text(computedRate.toFixed(2));
+                    } else {
+                        $('#computedRate').text('N/A');
+                    }
+                },
+                error: function () {
+                    $('#computedRate').text('N/A');
+                }
+            });
+        }
 
 
     </script>
